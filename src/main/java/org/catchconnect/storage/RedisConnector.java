@@ -34,7 +34,7 @@ public class RedisConnector {
         return success;
     }
 
-    public Double getIpOccurence(String ip){
+    public Double getIpOccurrence(String ip){
         Jedis jedis ;
         Double result = null;
 

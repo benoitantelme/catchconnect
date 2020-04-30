@@ -22,7 +22,7 @@ public class RedisConnectorTest {
         for (int i = 0; i < 20; i++)
             connector.incrementIp(ip);
 
-        assertEquals(20.0d, connector.getIpOccurence(ip), 0.1);
+        assertEquals(20.0d, connector.getIpOccurrence(ip), 0.1);
     }
 
 

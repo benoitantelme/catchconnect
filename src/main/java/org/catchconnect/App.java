@@ -4,6 +4,7 @@ import org.catchconnect.storage.RedisConnector;
 
 /**
  *
+ * Will contain main code
  *
  */
 public class App 
@@ -16,7 +17,7 @@ public class App
         for(int i = 0; i < 20; i++)
             connector.incrementIp(ip);
 
-        System.out.println("IP " + ip + " seen " + connector.getIpOccurence(ip) + " times");
+        System.out.println("IP " + ip + " seen " + connector.getIpOccurrence(ip) + " times");
 
         connector.close();
 
