@@ -3,6 +3,8 @@ package org.catchconnect.storage;
 import redis.clients.jedis.*;
 
 import java.time.Duration;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RedisConnector {
     private static final String PREFIX = "connections/ip/";
@@ -49,7 +51,23 @@ public class RedisConnector {
         return result;
     }
 
+    public List<Tuple> getTopK(int k){
+        Jedis jedis ;
+        Set<Tuple> tempResult = null;
 
+        try {
+            jedis = jedisPool.getResource();
+            if (jedis != null){
+                tempResult = jedis.zrevrangeByScoreWithScores(PREFIX, Integer.MAX_VALUE, 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return tempResult.stream().
+                limit(k).
+                collect(Collectors.toList());
+    }
 
     public void close(){
         jedisPool.close();
@@ -69,6 +87,5 @@ public class RedisConnector {
         poolConfig.setBlockWhenExhausted(true);
         return poolConfig;
     }
-
 
 }
