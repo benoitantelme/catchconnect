@@ -1,6 +1,6 @@
-package connect;
+package org.catchconnect;
 
-import connect.storage.RedisConnector;
+import org.catchconnect.storage.RedisConnector;
 
 /**
  *
@@ -11,7 +11,7 @@ public class App
     public static void main(String[] args )
     {
         String ip = "192.170.20.46";
-        RedisConnector connector = new RedisConnector();
+        RedisConnector connector = new RedisConnector(6379);
 
         for(int i = 0; i < 20; i++)
             connector.incrementIp(ip);

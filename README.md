@@ -1,2 +1,2 @@
-# catchconnect
+# connect.catchconnect
 Program to catch

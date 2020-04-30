@@ -1,4 +1,4 @@
-package connect.storage;
+package org.catchconnect.storage;
 
 import redis.clients.jedis.*;
 
@@ -7,7 +7,11 @@ import java.time.Duration;
 public class RedisConnector {
     private static final String PREFIX = "connections/ip/";
 
-    private JedisPool jedisPool = new JedisPool(buildPoolConfig(), "localhost");
+    private JedisPool jedisPool;
+
+    public RedisConnector(int port) {
+        jedisPool = new JedisPool(buildPoolConfig(), "localhost", port);
+    }
 
     public boolean incrementIp(String ip){
         Jedis jedis ;
@@ -18,7 +22,7 @@ public class RedisConnector {
                 success = false;
             else {
                 String key = PREFIX + ip;
-                Long result = jedis.incrBy(key, 1l);
+                Long result = jedis.incr(key);
                 System.out.println(key + " updated to " + result);
                 success = true;
             }

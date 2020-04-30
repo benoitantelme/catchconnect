@@ -1,4 +1,4 @@
-package connect;
+package org.catchconnect;
 
 import static org.junit.Assert.assertTrue;
 
