@@ -21,9 +21,8 @@ public class RedisConnector {
             if (jedis == null)
                 success = false;
             else {
-                String key = PREFIX + ip;
-                Long result = jedis.incr(key);
-                System.out.println(key + " updated to " + result);
+                Double updated = jedis.zincrby(PREFIX,1,ip);
+                System.out.println(ip + " updated to " + updated);
                 success = true;
             }
         } catch (Exception e) {
@@ -33,17 +32,15 @@ public class RedisConnector {
         return success;
     }
 
-    public Long getIpOccurence(String ip){
+    public Double getIpOccurence(String ip){
         Jedis jedis ;
-        Long result = null;
+        Double result = null;
 
         try {
             jedis = jedisPool.getResource();
             if (jedis != null){
-                String key = PREFIX + ip;
-                String res = jedis.get(key);
-                System.out.println(key + " updated to " + res);
-                result = Long.valueOf(res);
+                result = jedis.zscore(PREFIX, ip);
+                System.out.println(ip + " occurences: " + result);
             }
         } catch (Exception e) {
             e.printStackTrace();

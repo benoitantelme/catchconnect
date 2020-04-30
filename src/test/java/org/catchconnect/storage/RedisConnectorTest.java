@@ -3,7 +3,7 @@ package org.catchconnect.storage;
 import org.junit.Test;
 import redis.embedded.RedisServer;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class RedisConnectorTest {
     private final String ip = "192.170.20.46";
@@ -11,18 +11,25 @@ public class RedisConnectorTest {
 
     @Test
     public void testIncrementingValues() {
-        RedisServer redisServer = new RedisServer(port);
-        redisServer.start();
+        RedisServer redisServer = null;
+        RedisConnector connector = null;
+        
+        try {
+            redisServer = new RedisServer(port);
+            redisServer.start();
 
-        RedisConnector connector = new RedisConnector(port);
-        for(int i = 0; i < 20; i++)
-            connector.incrementIp(ip);
+            connector = new RedisConnector(port);
+            for (int i = 0; i < 20; i++)
+                connector.incrementIp(ip);
 
-
-        assertTrue(20l == connector.getIpOccurence(ip));
-
-        connector.close();
-        redisServer.stop();
+            Double a = connector.getIpOccurence(ip);
+            assertEquals(20.0d, connector.getIpOccurence(ip), 0.1);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            connector.close();
+            redisServer.stop();
+        }
     }
 
 
