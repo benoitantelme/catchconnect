@@ -1,7 +1,7 @@
 package org.catchconnect.source;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 public interface IConnectionGenerator {
-    Stream<String> ips();
+    List<String> ips();
 }
