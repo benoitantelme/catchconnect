@@ -1,19 +1,26 @@
 package org.catchconnect.source;
 
+import org.catchconnect.sink.IConnectionSink;
+
 import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ConnectionGenerator implements IConnectionGenerator {
-    public static final String DOT = ".";
+    protected static final String DOT = ".";
+    protected IConnectionSink sink;
+
+    public ConnectionGenerator(IConnectionSink sink) {
+        this.sink = sink;
+    }
 
     @Override
-    public List<String> ips() {
-
-
-
-        return null;
+    public void generateIps(int n) {
+        CompletableFuture.runAsync(() ->
+                IntStream.range(0, n).forEach(nbr -> CompletableFuture.supplyAsync(this::getIp)));
+        IntStream.range(0, n).forEach(nbr -> sink.receiveConnection(CompletableFuture.supplyAsync(this::getIp)));
     }
 
     protected String getIp() {
