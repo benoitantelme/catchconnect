@@ -23,7 +23,7 @@ class ConnectionGeneratorTest {
 
     @Test
     void getIp() {
-        generator = new ConnectionGenerator(new ConnectionSink());
+        generator = new ConnectionGenerator(mock(ConnectionSink.class));
         String ip = generator.getIp();
         assertTrue(ip.contains(DOT));
         String[] splitString = ip.split("\\" + DOT);

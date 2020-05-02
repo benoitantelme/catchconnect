@@ -1,9 +1,9 @@
 package org.catchconnect.storage;
 
+import org.catchconnect.model.IpStat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import redis.clients.jedis.Tuple;
 import redis.embedded.RedisServer;
 
 import java.util.List;
@@ -37,14 +37,14 @@ public class RedisConnectorTest {
         for (int i = 0; i < 8; i++)
             connector.incrementIp(ip+1);
 
-        List<Tuple> topK = connector.getTopK(5);
+        List<IpStat> topK = connector.getTopK(5);
         assertEquals(5, topK.size());
 
         topK = connector.getTopK(20);
         assertEquals(20, topK.size());
-        assertEquals(10.0, topK.get(0).getScore(), 0.1);
-        assertEquals(9.0, topK.get(1).getScore(), 0.1);
-        assertEquals(1.0, topK.get(2).getScore(), 0.1);
+        assertEquals(10, topK.get(0).getOccurrences());
+        assertEquals(9, topK.get(1).getOccurrences());
+        assertEquals(1, topK.get(2).getOccurrences());
     }
 
     @Before
