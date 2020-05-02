@@ -5,9 +5,10 @@ import redis.clients.jedis.*;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class RedisConnector implements IConnector{
+public class RedisConnector implements IConnector, IConnectionSink{
     private static final String PREFIX = "connections/ip/";
 
     private JedisPool jedisPool;
@@ -16,6 +17,7 @@ public class RedisConnector implements IConnector{
         jedisPool = new JedisPool(buildPoolConfig(), "localhost", port);
     }
 
+    @Override
     public boolean incrementIp(String ip){
         Jedis jedis ;
         boolean success;
@@ -35,6 +37,7 @@ public class RedisConnector implements IConnector{
         return success;
     }
 
+    @Override
     public int getIpOccurrence(String ip){
         Jedis jedis ;
         Double result = null;
@@ -52,6 +55,7 @@ public class RedisConnector implements IConnector{
         return result.intValue();
     }
 
+    @Override
     public List<IpStat> getTopK(int k){
         Jedis jedis ;
         Set<Tuple> tempResult = null;
@@ -71,8 +75,14 @@ public class RedisConnector implements IConnector{
                 collect(Collectors.toList());
     }
 
+    @Override
     public void close(){
         jedisPool.close();
+    }
+
+    @Override
+    public void receiveConnection(CompletableFuture<String> connection) {
+        connection.thenApply(ip -> incrementIp(ip));
     }
 
     private JedisPoolConfig buildPoolConfig() {
@@ -89,5 +99,4 @@ public class RedisConnector implements IConnector{
         poolConfig.setBlockWhenExhausted(true);
         return poolConfig;
     }
-
 }

@@ -7,8 +7,11 @@ import org.junit.Test;
 import redis.embedded.RedisServer;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class RedisConnectorTest {
     private final String ip = "192.170.20.46";
@@ -45,6 +48,11 @@ public class RedisConnectorTest {
         assertEquals(10, topK.get(0).getOccurrences());
         assertEquals(9, topK.get(1).getOccurrences());
         assertEquals(1, topK.get(2).getOccurrences());
+    }
+
+    @Test
+    public void receiveConnection(){
+        //TODO
     }
 
     @Before
