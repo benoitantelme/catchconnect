@@ -81,8 +81,8 @@ public class RedisConnector implements IConnector, IConnectionSink{
     }
 
     @Override
-    public void receiveConnection(CompletableFuture<String> connection) {
-        connection.thenApply(ip -> incrementIp(ip));
+    public CompletableFuture<Boolean> receiveConnection(CompletableFuture<String> connection) {
+        return connection.thenApply(ip -> incrementIp(ip));
     }
 
     private JedisPoolConfig buildPoolConfig() {

@@ -2,7 +2,9 @@ package org.catchconnect.source;
 
 import org.catchconnect.storage.IConnectionSink;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -17,8 +19,15 @@ public class ConnectionGenerator implements IConnectionGenerator {
     }
 
     @Override
-    public void generateIps(int n) {
-        IntStream.range(0, n).forEach(nbr -> sink.receiveConnection(CompletableFuture.supplyAsync(this::getIp)));
+    public List<CompletableFuture<String>> generateIps(int n) {
+        List<CompletableFuture<String>> futures = new ArrayList<>();
+        IntStream.range(0, n).forEach(nbr -> {
+            CompletableFuture future = CompletableFuture.supplyAsync(this::getIp);
+            futures.add(future);
+            sink.receiveConnection(future);
+        });
+
+        return futures;
     }
 
     protected String getIp() {

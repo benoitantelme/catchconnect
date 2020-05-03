@@ -3,9 +3,11 @@ package org.catchconnect.source;
 import org.catchconnect.storage.IConnectionSink;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static org.catchconnect.source.ConnectionGenerator.DOT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -16,9 +18,10 @@ class ConnectionGeneratorTest {
     void ips() {
         IConnectionSink mockedSink = mock(IConnectionSink.class);
         generator = new ConnectionGenerator(mockedSink);
-        generator.generateIps(10);
+        List<CompletableFuture<String>> futures =  generator.generateIps(10);
         verify(mockedSink, times(10)).
                 receiveConnection(any(CompletableFuture.class));
+        assertEquals(10, futures.size());
     }
 
     @Test

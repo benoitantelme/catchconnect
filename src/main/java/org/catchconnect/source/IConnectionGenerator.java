@@ -1,5 +1,8 @@
 package org.catchconnect.source;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 public interface IConnectionGenerator {
-    void generateIps(int n);
+    List<CompletableFuture<String>> generateIps(int n);
 }
