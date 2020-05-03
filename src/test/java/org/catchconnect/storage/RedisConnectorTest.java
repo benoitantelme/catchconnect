@@ -8,10 +8,8 @@ import redis.embedded.RedisServer;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 
 public class RedisConnectorTest {
     private final String ip = "192.170.20.46";
@@ -52,7 +50,13 @@ public class RedisConnectorTest {
 
     @Test
     public void receiveConnection(){
-        //TODO
+        String ip = "223.255.255.255";
+        CompletableFuture<String> future = CompletableFuture.completedFuture(ip);
+
+        for(int i = 0; i < 10; i++)
+            connector.receiveConnection(future);
+
+        assertEquals(10, connector.getIpOccurrence(ip));
     }
 
     @Before
