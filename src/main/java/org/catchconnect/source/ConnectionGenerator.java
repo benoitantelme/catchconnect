@@ -19,12 +19,11 @@ public class ConnectionGenerator implements IConnectionGenerator {
     }
 
     @Override
-    public List<CompletableFuture<String>> generateIps(int n) {
-        List<CompletableFuture<String>> futures = new ArrayList<>();
+    public List<CompletableFuture<Boolean>> generateIps(int n) {
+        List<CompletableFuture<Boolean>> futures = new ArrayList<>();
         IntStream.range(0, n).forEach(nbr -> {
-            CompletableFuture future = CompletableFuture.supplyAsync(this::getIp);
+            CompletableFuture future = sink.receiveConnection(CompletableFuture.supplyAsync(this::getIp));
             futures.add(future);
-            sink.receiveConnection(future);
         });
 
         return futures;

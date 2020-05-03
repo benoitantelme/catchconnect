@@ -4,5 +4,5 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface IConnectionGenerator {
-    List<CompletableFuture<String>> generateIps(int n);
+    List<CompletableFuture<Boolean>> generateIps(int n);
 }

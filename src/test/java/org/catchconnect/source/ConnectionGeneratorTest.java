@@ -18,7 +18,7 @@ class ConnectionGeneratorTest {
     void ips() {
         IConnectionSink mockedSink = mock(IConnectionSink.class);
         generator = new ConnectionGenerator(mockedSink);
-        List<CompletableFuture<String>> futures =  generator.generateIps(10);
+        List<CompletableFuture<Boolean>> futures =  generator.generateIps(10);
         verify(mockedSink, times(10)).
                 receiveConnection(any(CompletableFuture.class));
         assertEquals(10, futures.size());
