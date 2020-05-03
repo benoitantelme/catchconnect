@@ -1,12 +1,14 @@
 package org.catchconnect.storage;
 
+import org.catchconnect.model.IpStat;
 import redis.clients.jedis.*;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class RedisConnector {
+public class RedisConnector implements IConnector, IConnectionSink{
     private static final String PREFIX = "connections/ip/";
 
     private JedisPool jedisPool;
@@ -15,6 +17,7 @@ public class RedisConnector {
         jedisPool = new JedisPool(buildPoolConfig(), "localhost", port);
     }
 
+    @Override
     public boolean incrementIp(String ip){
         Jedis jedis ;
         boolean success;
@@ -34,7 +37,8 @@ public class RedisConnector {
         return success;
     }
 
-    public Double getIpOccurrence(String ip){
+    @Override
+    public int getIpOccurrence(String ip){
         Jedis jedis ;
         Double result = null;
 
@@ -48,10 +52,11 @@ public class RedisConnector {
             e.printStackTrace();
         }
 
-        return result;
+        return result.intValue();
     }
 
-    public List<Tuple> getTopK(int k){
+    @Override
+    public List<IpStat> getTopK(int k){
         Jedis jedis ;
         Set<Tuple> tempResult = null;
 
@@ -66,11 +71,18 @@ public class RedisConnector {
 
         return tempResult.stream().
                 limit(k).
+                map(tpl -> new IpStat(tpl.getElement(), (int) tpl.getScore())).
                 collect(Collectors.toList());
     }
 
+    @Override
     public void close(){
         jedisPool.close();
+    }
+
+    @Override
+    public void receiveConnection(CompletableFuture<String> connection) {
+        connection.thenApply(ip -> incrementIp(ip));
     }
 
     private JedisPoolConfig buildPoolConfig() {
@@ -87,5 +99,4 @@ public class RedisConnector {
         poolConfig.setBlockWhenExhausted(true);
         return poolConfig;
     }
-
 }

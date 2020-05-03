@@ -1,6 +1,6 @@
 package org.catchconnect.source;
 
-import org.catchconnect.sink.ConnectionSink;
+import org.catchconnect.storage.IConnectionSink;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
@@ -14,7 +14,7 @@ class ConnectionGeneratorTest {
 
     @Test
     void ips() {
-        ConnectionSink mockedSink = mock(ConnectionSink.class);
+        IConnectionSink mockedSink = mock(IConnectionSink.class);
         generator = new ConnectionGenerator(mockedSink);
         generator.generateIps(10);
         verify(mockedSink, times(10)).
@@ -23,7 +23,7 @@ class ConnectionGeneratorTest {
 
     @Test
     void getIp() {
-        generator = new ConnectionGenerator(new ConnectionSink());
+        generator = new ConnectionGenerator(mock(IConnectionSink.class));
         String ip = generator.getIp();
         assertTrue(ip.contains(DOT));
         String[] splitString = ip.split("\\" + DOT);
