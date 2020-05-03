@@ -6,8 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import redis.embedded.RedisServer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -49,14 +51,17 @@ public class RedisConnectorTest {
     }
 
     @Test
-    public void receiveConnection(){
+    public void receiveConnection() throws ExecutionException, InterruptedException {
         String ip = "223.255.255.255";
-        CompletableFuture<String> future = CompletableFuture.completedFuture(ip);
+        CompletableFuture<String> futureIp = CompletableFuture.completedFuture(ip);
 
+        List<CompletableFuture<Boolean>> futures =  new ArrayList<>();
         for(int i = 0; i < 10; i++)
-            connector.receiveConnection(future);
+            futures.add(connector.receiveConnection(futureIp));
 
         assertEquals(10, connector.getIpOccurrence(ip));
+        for(CompletableFuture<Boolean> future : futures)
+            assertEquals(true, future.get());
     }
 
     @Before
