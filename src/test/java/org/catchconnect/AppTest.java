@@ -1,5 +1,6 @@
 package org.catchconnect;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.catchconnect.source.ConnectionGenerator;
@@ -8,6 +9,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import redis.embedded.RedisServer;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Unit test for workflow
@@ -18,17 +23,15 @@ public class AppTest {
     RedisConnector connector;
 
     @Test
-    public void worfklowTest() {
-//        TODO
-//        ConnectionGenerator generator = new ConnectionGenerator(connector);
-//
-//
-//        generator.generateIps(100);
-//
-//        assertTrue(connector.getTopK(10).size() == 10);
-//
-//
-//        assertTrue(true);
+    public void worfklowTest() throws ExecutionException, InterruptedException {
+        ConnectionGenerator generator = new ConnectionGenerator(connector);
+        generator.generateIps(100);
+
+        List<CompletableFuture<Boolean>> futures =  generator.generateIps(10);
+        for(CompletableFuture<Boolean> future : futures)
+            assertEquals(true, future.get());
+
+        assertTrue(connector.getTopK(10).size() == 10);
     }
 
     @Before
